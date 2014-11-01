@@ -1,3 +1,6 @@
-
-//your angular app goes here
+angular.module("dapp",[
+  
+]).config([function(){
+  
+}]);
 

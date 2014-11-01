@@ -9,12 +9,11 @@ app.set("view engine", "ejs");
 app.use(require("connect-livereload")());
 
 app.use(express.static(path.join(__dirname, "build")));
-app.use(express.static(path.join(__dirname, "templates")));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.set("port", process.env.PORT || 3000);
 
 app.get("/",function(req,res){
-  console.log("got request");
   res.render("index");
 });
 

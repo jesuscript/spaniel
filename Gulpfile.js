@@ -1,7 +1,7 @@
 var gulp = require("gulp"),
     plugins = require("gulp-load-plugins")(),
     bowerFiles = require("main-bower-files"),
-    angularFilesort = require("gulp-angular-filesort"),
+    //angularFilesort = require("gulp-angular-filesort"),
     es = require("event-stream");
 
 //TODO DRY up
@@ -18,15 +18,16 @@ gulp.task("bower", function(){
 
 gulp.task("build-js",["clean","bower"],function(){
   return es.merge(
-    gulp.src("./assets/js/**/*.js", {base: "./assets/js/"}),
+    gulp.src("./assets/js/**/*.js", {base: "./assets/js/"})
+      .pipe(gulp.dest("./build/js")),
     gulp.src(bowerFiles({
       paths: {
         bowerDirectory: 'assets/bower_components',
         bowerrc: '.bowerrc',
         bowerJson: 'bower.json'
       }
-    }),{base: "assets"})
-  ).pipe(gulp.dest("./build/js"));
+    })).pipe(gulp.dest("./build/js/bower/"))
+  );
 });
 
 gulp.task("build-css",["clean","bower"],function(){
@@ -37,10 +38,10 @@ gulp.task("build-css",["clean","bower"],function(){
 
 var runIndex = function(){
   return gulp.src("./views/index.ejs")
-    .pipe(plugins.inject(gulp.src("js/bower_components/**/*.js",{read:false, cwd: "./build"}),
+    .pipe(plugins.inject(gulp.src("js/bower/**/*.js",{read:false, cwd: "./build"}),
                          {starttag: "<!-- inject:bower_components:js -->"}))
-    .pipe(plugins.inject(gulp.src(["js/**/*.js", "!js/bower_components/**/*.js"], {cwd: "./build"})
-                         .pipe(angularFilesort())))
+    .pipe(plugins.inject(gulp.src(["js/**/*.js", "!js/bower/**/*.js"], {cwd: "./build"})
+                         .pipe(plugins.angularFilesort())))
     .pipe(plugins.inject(gulp.src("css/**/*.css", {read: false, cwd: "./build"})))
     .pipe(gulp.dest("./build/"))
     .pipe(plugins.livereload());
@@ -50,9 +51,7 @@ gulp.task("index", function(){
   return runIndex();
 });
 
-gulp.task("build",["build-js", "build-css"], function(){
-  return runIndex();
-});
+gulp.task("build",["build-js", "build-css"]);
 
 
 gulp.task("watch", function(){
@@ -62,8 +61,7 @@ gulp.task("watch", function(){
 
     plugins.watch("assets/css/**/*.less", {base: "./assets"})
       .pipe(plugins.less())
-      .pipe(gulp.dest("./build/"))
-      .pipe(plugins.livereload()),
+      .pipe(gulp.dest("./build/")),
 
     plugins.watch("templates/**/*.html")
   ).pipe(plugins.livereload());
@@ -73,7 +71,7 @@ gulp.task("watch", function(){
   });
 
   plugins.watch("bower.json", function(){
-    gulp.start("bower");
+    gulp.start("build");
   });
 });
 
