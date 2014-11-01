@@ -38,7 +38,12 @@ gulp.task("build-css",["clean","bower"],function(){
 
 var runIndex = function(){
   return gulp.src("./views/index.ejs")
-    .pipe(plugins.inject(gulp.src("js/bower/**/*.js",{read:false, cwd: "./build"}),
+    .pipe(plugins.inject(gulp.src("js/bower/**/*.js",{read:false, cwd: "./build"})
+                         .pipe(plugins.order([
+                           "jquery.js",
+                           "angular.js",
+                           "*"
+                         ])),
                          {starttag: "<!-- inject:bower_components:js -->"}))
     .pipe(plugins.inject(gulp.src(["js/**/*.js", "!js/bower/**/*.js"], {cwd: "./build"})
                          .pipe(plugins.angularFilesort())))
@@ -63,7 +68,7 @@ gulp.task("watch", function(){
       .pipe(plugins.less())
       .pipe(gulp.dest("./build/")),
 
-    plugins.watch("templates/**/*.html")
+    plugins.watch("public/templates/**/*.html")
   ).pipe(plugins.livereload());
 
   plugins.watch(["build/**/*.js","build/**/*.css"], {read:false},function(){

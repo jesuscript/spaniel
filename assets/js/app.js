@@ -1,6 +1,8 @@
 angular.module("dapp",[
-  
-]).config([function(){
-  
+  "ngRoute"
+]).config(["$routeProvider",function($routeProvider){
+  $routeProvider.when("/", {
+    templateUrl: "templates/index.html"
+  });
 }]);
 
