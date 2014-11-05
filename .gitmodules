@@ -1,3 +1,6 @@
 [submodule "node-ethereum"]
 	path = node-ethereum
 	url = git@github.com:ethereum/node-ethereum.git
+[submodule "node-ethereum-tmp"]
+	path = node-ethereum-tmp
+	url = git@github.com:jesuscript/node-ethereum.git
